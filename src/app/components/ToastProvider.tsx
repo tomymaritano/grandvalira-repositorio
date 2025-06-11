@@ -1,8 +1,9 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { randomUUID } from 'crypto';
 
-type Toast = { id: number; message: string; type: 'success' | 'error' | 'info' };
+type Toast = { id: string; message: string; type: 'success' | 'error' | 'info' };
 
 type ToastContextType = {
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
@@ -25,7 +26,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const showToast = (message: string, type: Toast['type'] = 'info') => {
-    const id = Date.now();
+    const id = randomUUID();
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
