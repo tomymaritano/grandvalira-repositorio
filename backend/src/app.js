@@ -22,5 +22,6 @@ const auditRoutes = require('./routes/audit.routes');
 app.use('/auth', authRoutes);
 app.use('/contacts', contactsRoutes);
 app.use('/audit-log', auditRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 module.exports = app;
