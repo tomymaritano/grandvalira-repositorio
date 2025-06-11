@@ -2,44 +2,39 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
-console.log('Starting user create');
+
 async function main() {
-  const email = 'moderator@example.com';
+  await prisma.$connect();
+  console.log('Starting user create');
+
   const plainPassword = '123456';
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
   const existingUser = await prisma.user.findUnique({
-    where: { email },
+    where: { email: 'test@example.com' },
   });
 
   if (existingUser) {
-    // Update user
-    const updatedUser = await prisma.user.update({
-      where: { email },
-      data: {
-        password: hashedPassword,
-        role: 'MODERATOR',
-      },
-    });
-    console.log('User updated:', updatedUser);
-  } else {
-    // Create new user
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        role: 'MODERATOR',
-      },
-    });
-    console.log('User created:', newUser);
+    console.log('User already exists:', existingUser.email);
+    return;
   }
+
+  const user = await prisma.user.create({
+    data: {
+      email: 'test@example.com',
+      password: hashedPassword,
+      role: 'USER',
+    },
+  });
+
+  console.log('User created:', user);
 }
 
 main()
   .catch((e) => {
     console.error(e);
-    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
+    process.exit(0);
   });

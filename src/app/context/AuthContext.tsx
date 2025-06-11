@@ -12,6 +12,7 @@ type AuthContextType = {
   token: string
   role: string
   isAuthenticated: boolean
+  isInitialized: boolean
   login: (token: string) => void
   logout: () => void
 }
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType>({
   token: '',
   role: '',
   isAuthenticated: false,
+  isInitialized: false,
   login: () => {},
   logout: () => {},
 })
@@ -27,6 +29,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string>('')
   const [role, setRole] = useState<string>('')
+  const [isInitialized, setIsInitialized] = useState(false)
 
   const logout = () => {
     localStorage.removeItem('token')
@@ -73,11 +76,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout()
       }
     }
+    setIsInitialized(true)
   }, [])
 
   return (
     <AuthContext.Provider
-      value={{ token, role, isAuthenticated: !!token, login, logout }}
+      value={{ token, role, isAuthenticated: !!token, isInitialized, login, logout }}
     >
       {children}
     </AuthContext.Provider>

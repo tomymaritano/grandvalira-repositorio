@@ -128,9 +128,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$Aut
 ;
 ;
 const useProtectedRoute = (allowedRoles)=>{
-    const { token, role } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    const { token, role, isInitialized } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (!isInitialized) return;
         if (!token) {
             // Si no está autenticado → redirect a login
             router.push('/login');
@@ -142,6 +143,7 @@ const useProtectedRoute = (allowedRoles)=>{
     }, [
         token,
         role,
+        isInitialized,
         router,
         allowedRoles
     ]);

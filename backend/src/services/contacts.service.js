@@ -15,3 +15,7 @@ exports.updateContact = async (id, data) => {
 exports.banContact = async (id) => {
   return await contactRepository.banContact(id)
 }
+
+exports.deleteContact = async (id) => {
+  return await contactRepository.deleteContact(id)
+}

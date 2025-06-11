@@ -76,4 +76,5 @@ module.exports = {
   createContact: exports.createContact,
   updateContact: exports.updateContact,
   banContact: exports.banContact,
+  deleteContact: exports.deleteContact,
 };
