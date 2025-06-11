@@ -1,5 +1,5 @@
 const express = require('express');
-const authenticate = require('../middlewares/authenticate.middleware');
+const authenticate = require('../middlewares/authenticate');
 const authorize = require('../middlewares/authorize.middleware');
 const contactsController = require('../controllers/contacts.controller');
 const validate = require('../middlewares/validation.middleware');
@@ -20,6 +20,20 @@ router.post(
   authorize(['MODERATOR', 'ADMIN']),
   validate(createContactSchema),
   contactsController.createContact
+);
+
+router.put(
+  '/:id',
+  authenticate,
+  authorize(['MODERATOR', 'ADMIN']),
+  contactsController.updateContact
+);
+
+router.patch(
+  '/:id/ban',
+  authenticate,
+  authorize(['MODERATOR', 'ADMIN']),
+  contactsController.banContact
 );
 
 module.exports = router;
