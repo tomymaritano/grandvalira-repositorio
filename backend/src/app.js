@@ -33,4 +33,6 @@ app.use('/auth', authRoutes);
 app.use('/contacts', contactsRoutes);
 app.use('/audit-log', auditRoutes);
 
+app.use(errorHandler);
+
 module.exports = app;

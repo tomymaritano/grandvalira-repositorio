@@ -1,7 +1,7 @@
 const contactsService = require('../services/contacts.service');
 const logger = require('../utils/logger');
 
-exports.getContacts = async (req, res) => {
+exports.getContacts = async (req, res, next) => {
   try {
     const { page, limit, search, status } = req.query;
     const contacts = await contactsService.getContacts({
@@ -13,11 +13,11 @@ exports.getContacts = async (req, res) => {
     res.json(contacts);
   } catch (err) {
     logger.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    next(err);
   }
 };
 
-exports.createContact = async (req, res) => {
+exports.createContact = async (req, res, next) => {
   try {
     const { name, email, phone } = req.body;
     if (!name || !email || !phone) {
@@ -27,11 +27,11 @@ exports.createContact = async (req, res) => {
     res.status(201).json(contact);
   } catch (err) {
     logger.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    next(err);
   }
 };
 
-exports.updateContact = async (req, res) => {
+exports.updateContact = async (req, res, next) => {
   try {
     const contact = await contactsService.updateContact(
       req.params.id,
@@ -41,21 +41,21 @@ exports.updateContact = async (req, res) => {
     res.json(contact);
   } catch (err) {
     logger.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    next(err);
   }
 };
 
-exports.banContact = async (req, res) => {
+exports.banContact = async (req, res, next) => {
   try {
     const contact = await contactsService.banContact(req.params.id, req.user.id);
     res.json(contact);
   } catch (err) {
     logger.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    next(err);
   }
 };
 
-exports.updateContact = async (req, res) => {
+exports.updateContact = async (req, res, next) => {
   try {
     const contact = await contactsService.updateContact(req.params.id, req.body);
     res.json(contact);
@@ -64,11 +64,11 @@ exports.updateContact = async (req, res) => {
     if (err.code === 'P2025') {
       return res.status(404).json({ error: 'Contact not found' });
     }
-    res.status(500).json({ error: 'Internal server error' });
+    next(err);
   }
 };
 
-exports.banContact = async (req, res) => {
+exports.banContact = async (req, res, next) => {
   try {
     const contact = await contactsService.banContact(req.params.id);
     res.json(contact);
@@ -77,6 +77,6 @@ exports.banContact = async (req, res) => {
     if (err.code === 'P2025') {
       return res.status(404).json({ error: 'Contact not found' });
     }
-    res.status(500).json({ error: 'Internal server error' });
+    next(err);
   }
 };
