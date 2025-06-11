@@ -19,7 +19,9 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchContacts = async () => {
       setIsLoading(true);
-      const { data, ok, error } = await get('http://localhost:3000/contacts');
+      const { data, ok, error } = await get(
+        `${process.env.NEXT_PUBLIC_API_URL}/contacts`
+      );
 
       if (ok) {
         setContacts(data);
@@ -34,14 +36,16 @@ export default function DashboardPage() {
 
   const handleBanContact = async (contactId: string | number) => {
     const { ok, error } = await post(
-      `http://localhost:3000/contacts/${contactId}/ban`,
+      `${process.env.NEXT_PUBLIC_API_URL}/contacts/${contactId}/ban`,
       {}
     );
 
     if (ok) {
       showToast('Contact banned', 'success');
       // Refetch contacts
-      const { data } = await get('http://localhost:3000/contacts');
+      const { data } = await get(
+        `${process.env.NEXT_PUBLIC_API_URL}/contacts`
+      );
       setContacts(data);
     } else {
       showToast(error || 'Failed to ban contact', 'error');

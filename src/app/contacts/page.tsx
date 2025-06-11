@@ -20,7 +20,9 @@ export default function ContactsPage() {
   useEffect(() => {
     const fetchContacts = async () => {
       setIsLoading(true);
-      const { data, ok, error } = await get('http://localhost:3000/contacts');
+      const { data, ok, error } = await get(
+        `${process.env.NEXT_PUBLIC_API_URL}/contacts`
+      );
 
       if (ok) {
         setContacts(data);
