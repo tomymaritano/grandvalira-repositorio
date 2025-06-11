@@ -31,29 +31,6 @@ exports.createContact = async (req, res, next) => {
   }
 };
 
-exports.updateContact = async (req, res, next) => {
-  try {
-    const contact = await contactsService.updateContact(
-      req.params.id,
-      req.body,
-      req.user.id
-    );
-    res.json(contact);
-  } catch (err) {
-    logger.error(err);
-    next(err);
-  }
-};
-
-exports.banContact = async (req, res, next) => {
-  try {
-    const contact = await contactsService.banContact(req.params.id, req.user.id);
-    res.json(contact);
-  } catch (err) {
-    logger.error(err);
-    next(err);
-  }
-};
 
 exports.updateContact = async (req, res, next) => {
   try {
@@ -79,4 +56,11 @@ exports.banContact = async (req, res, next) => {
     }
     next(err);
   }
+};
+
+module.exports = {
+  getContacts: exports.getContacts,
+  createContact: exports.createContact,
+  updateContact: exports.updateContact,
+  banContact: exports.banContact,
 };
