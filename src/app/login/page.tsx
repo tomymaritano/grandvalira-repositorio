@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { loginSchema } from '../validation/auth';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -18,6 +19,13 @@ export default function LoginPage() {
 
     setIsLoading(true);
     setError('');
+
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      setIsLoading(false);
+      setError(result.error.errors.map((err) => err.message).join(', '));
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:3000/auth/login', {
