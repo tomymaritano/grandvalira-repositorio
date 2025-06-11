@@ -1,24 +1,26 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const Sentry = require('@sentry/node');
-const { ProfilingIntegration } = require('@sentry/profiling-node');
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  integrations: [new ProfilingIntegration()],
-  tracesSampleRate: 1.0,
-});
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 const app = express();
 
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+app.use(limiter);
 
 app.use(cors({
-  origin: 'http://localhost:3001',
+  origin: process.env.ALLOWED_ORIGIN,
 }));
 app.use(express.json());
+
+// Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Aquí vas a importar las rutas
 const authRoutes = require('./routes/auth.routes');
@@ -28,7 +30,5 @@ const auditRoutes = require('./routes/audit.routes');
 app.use('/auth', authRoutes);
 app.use('/contacts', contactsRoutes);
 app.use('/audit-log', auditRoutes);
-
-app.use(Sentry.Handlers.errorHandler());
 
 module.exports = app;
