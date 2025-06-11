@@ -14,6 +14,8 @@ pnpm dev
 bun dev
 ```
 
+Set the `NEXT_PUBLIC_API_URL` environment variable to the base URL of the back-end API.
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.

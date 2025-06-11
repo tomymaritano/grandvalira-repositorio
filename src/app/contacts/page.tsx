@@ -16,7 +16,7 @@ export default function ContactsPage() {
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const { data, ok } = await get('http://localhost:3000/contacts');
+      const { data, ok } = await get('/contacts');
 
       if (ok) {
         setContacts(data);

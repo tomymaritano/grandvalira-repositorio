@@ -2,57 +2,69 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type AuthContextType = {
-  token: string;
+const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
+
+export type AuthContextType = {
   role: string;
   isAuthenticated: boolean;
-  login: (token: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<string | null>;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
-  token: '',
   role: '',
   isAuthenticated: false,
-  login: () => {},
-  logout: () => {},
+  login: async () => null,
+  logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [token, setToken] = useState<string>('');
   const [role, setRole] = useState<string>('');
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedRole = localStorage.getItem('role');
+  const fetchSession = async () => {
+    try {
+      const res = await fetch(`${API_URL}/auth/session`, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setRole(data.role);
+      } else {
+        setRole('');
+      }
+    } catch {
+      setRole('');
+    }
+  };
 
-    if (storedToken) setToken(storedToken);
-    if (storedRole) setRole(storedRole);
+  useEffect(() => {
+    fetchSession();
   }, []);
 
-  const login = (newToken: string): string => {
-  const decoded = JSON.parse(atob(newToken.split('.')[1]));
-  const userRole = decoded.role;
+  const login = async (email: string, password: string): Promise<string | null> => {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ email, password }),
+    });
 
-  localStorage.setItem('token', newToken);
-  localStorage.setItem('role', userRole);
+    if (res.ok) {
+      const data = await res.json();
+      setRole(data.role);
+      return data.role as string;
+    }
 
-  setToken(newToken);
-  setRole(userRole);
+    return null;
+  };
 
-  return userRole; // 👈 muy importante para que LoginPage pueda redirigir
-};
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-
-    setToken('');
+  const logout = async () => {
+    await fetch(`${API_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
     setRole('');
   };
 
   return (
-    <AuthContext.Provider value={{ token, role, isAuthenticated: !!token, login, logout }}>
+    <AuthContext.Provider value={{ role, isAuthenticated: role !== '', login, logout }}>
       {children}
     </AuthContext.Provider>
   );

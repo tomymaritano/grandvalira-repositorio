@@ -1,16 +1,13 @@
 'use client';
 
-import { useAuth } from '../context/AuthContext';
+const API_URL = process.env.NEXT_PUBLIC_API_URL as string;
 
 export const useApi = () => {
-  const { token } = useAuth();
 
  const get = async (url: string) => {
   try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await fetch(`${API_URL}${url}`, {
+      credentials: 'include',
     });
 
     const data = await response.json();
@@ -23,12 +20,12 @@ export const useApi = () => {
 
 const post = async (url: string, body: unknown) => {
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`${API_URL}${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
+      credentials: 'include',
       body: JSON.stringify(body),
     });
 

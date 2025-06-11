@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const { data, ok } = await get('http://localhost:3000/contacts');
+      const { data, ok } = await get('/contacts');
 
       if (ok) {
         setContacts(data);
@@ -28,12 +28,12 @@ export default function DashboardPage() {
   }, [get]);
 
   const handleBanContact = async (contactId: string | number) => {
-    const { ok } = await post(`http://localhost:3000/contacts/${contactId}/ban`, {});
+    const { ok } = await post(`/contacts/${contactId}/ban`, {});
 
     if (ok) {
       alert('Contact banned');
       // Refetch contacts
-      const { data } = await get('http://localhost:3000/contacts');
+      const { data } = await get('/contacts');
       setContacts(data);
     } else {
       alert('Failed to ban contact');
