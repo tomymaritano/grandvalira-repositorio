@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useApi } from '@/app/hooks/useApi';
 import { useProtectedRoute } from '@/app/hooks/useProtectedRoute';
 import { useToast } from '../components/ToastProvider';
+import { useAuth } from '../context/AuthContext';
 
 export default function ContactsPage() {
   // 👈 Proteges esta página → todos los roles pueden entrar
@@ -11,6 +12,7 @@ export default function ContactsPage() {
 
   const { get } = useApi();
   const { showToast } = useToast();
+  const { token } = useAuth();
 
   type Contact = { id: string | number; name: string; email: string };
 
@@ -33,7 +35,7 @@ export default function ContactsPage() {
     };
 
     fetchContacts();
-  }, [get]);
+  }, [token]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-6">

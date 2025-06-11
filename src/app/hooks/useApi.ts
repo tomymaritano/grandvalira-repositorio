@@ -1,11 +1,12 @@
 'use client';
 
+import { useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 export const useApi = () => {
   const { token } = useAuth();
 
-  const get = async (url: string) => {
+  const get = useCallback(async (url: string) => {
     try {
       const response = await fetch(url, {
         headers: {
@@ -25,9 +26,9 @@ export const useApi = () => {
       console.error('GET error:', error);
       return { data: null, ok: false, status: 0, error: 'Network error' };
     }
-  };
+  }, [token]);
 
-  const post = async (url: string, body: unknown) => {
+  const post = useCallback(async (url: string, body: unknown) => {
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -50,7 +51,7 @@ export const useApi = () => {
       console.error('POST error:', error);
       return { data: null, ok: false, status: 0, error: 'Network error' };
     }
-  };
+  }, [token]);
 
   return { get, post };
 };
