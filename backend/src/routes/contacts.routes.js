@@ -3,6 +3,7 @@ const authenticate = require('../middlewares/authenticate')
 const authorize = require('../middlewares/authorize.middleware')
 const contactsController = require('../controllers/contacts.controller')
 const validate = require('../middlewares/validation.middleware')
+const audit = require('../middlewares/audit.middleware')
 const {
   createContactSchema,
   updateContactSchema,
@@ -25,6 +26,7 @@ router.post(
   authenticate,
   authorize(['MODERATOR', 'ADMIN']),
   validate(createContactSchema),
+  audit('CREATE', 'CONTACT'),
   contactsController.createContact,
 )
 
@@ -34,6 +36,7 @@ router.put(
   authorize(['MODERATOR', 'ADMIN']),
   validate(idParamSchema, 'params'),
   validate(updateContactSchema),
+  audit('UPDATE', 'CONTACT'),
   contactsController.updateContact,
 )
 
@@ -42,6 +45,7 @@ router.patch(
   authenticate,
   authorize(['MODERATOR', 'ADMIN']),
   validate(idParamSchema, 'params'),
+  audit('BAN', 'CONTACT'),
   contactsController.banContact,
 )
 
