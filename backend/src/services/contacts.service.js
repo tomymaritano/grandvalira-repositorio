@@ -1,5 +1,4 @@
 const contactRepository = require('../repositories/contact.repository')
-const auditService = require('./audit.service')
 
 exports.getContacts = async (options) => {
   return await contactRepository.getContacts(options)
@@ -15,8 +14,4 @@ exports.updateContact = async (id, data) => {
 
 exports.banContact = async (id) => {
   return await contactRepository.banContact(id)
-}
-
-exports.deleteContact = async (id) => {
-  return await contactRepository.deleteContact(id)
 }
