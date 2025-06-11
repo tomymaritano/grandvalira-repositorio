@@ -49,4 +49,12 @@ router.patch(
   contactsController.banContact,
 )
 
+router.delete(
+  '/:id',
+  authenticate,
+  authorize(['MODERATOR', 'ADMIN']),
+  validate(idParamSchema, 'params'),
+  contactsController.deleteContact,
+)
+
 module.exports = router
