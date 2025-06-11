@@ -45,10 +45,12 @@ npm run dev
 
 ### 2️⃣ Frontend
 
+La aplicación cliente se ejecuta desde la raíz del repositorio. Asegúrate de definir
+la variable `NEXT_PUBLIC_API_URL` en un archivo `.env` apuntando al backend.
+
 ```bash
-cd app
 npm install
-npm run dev
+PORT=3001 npm run dev
 # Abre http://localhost:3001
 ```
 
