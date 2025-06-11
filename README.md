@@ -26,7 +26,7 @@ Una plataforma interna para gestionar el directorio de empleados.
 ### 1️⃣ Backend
 
 ```bash
-cd contacts-backend
+cd backend
 npm install
 cp .env.example .env
 # Completa DATABASE_URL y JWT_SECRET
