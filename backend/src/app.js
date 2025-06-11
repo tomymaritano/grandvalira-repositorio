@@ -1,17 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-<<<<<<< HEAD
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-
-if (!process.env.JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required');
-}
-=======
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
->>>>>>> main
 
 const app = express();
 
