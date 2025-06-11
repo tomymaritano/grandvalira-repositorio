@@ -13,16 +13,16 @@ const swaggerSpec = {
   tags: [
     {
       name: 'Authentication',
-      description: 'User authentication'
+      description: 'User authentication',
     },
     {
       name: 'Contacts',
-      description: 'Manage employee contacts'
+      description: 'Manage employee contacts',
     },
     {
       name: 'Audit Log',
-      description: 'Audit log entries'
-    }
+      description: 'Audit log entries',
+    },
   ],
   components: {
     securitySchemes: {
@@ -98,7 +98,14 @@ const swaggerSpec = {
       },
       AuditLog: {
         type: 'object',
-        required: ['id', 'action', 'entity', 'entityId', 'changedById', 'timestamp'],
+        required: [
+          'id',
+          'action',
+          'entity',
+          'entityId',
+          'changedById',
+          'timestamp',
+        ],
         properties: {
           id: { type: 'string' },
           action: { type: 'string' },
@@ -271,6 +278,30 @@ const swaggerSpec = {
           },
         },
       },
+      delete: {
+        security: [{ bearerAuth: [] }],
+        tags: ['Contacts'],
+        summary: 'Delete a contact',
+        parameters: [
+          {
+            in: 'path',
+            name: 'id',
+            required: true,
+            schema: { type: 'string' },
+          },
+        ],
+        responses: {
+          204: { description: 'Contact deleted' },
+          404: {
+            description: 'Contact not found',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' },
+              },
+            },
+          },
+        },
+      },
     },
     '/contacts/{id}/ban': {
       patch: {
@@ -326,6 +357,6 @@ const swaggerSpec = {
       },
     },
   },
-};
+}
 
-module.exports = swaggerSpec;
+module.exports = swaggerSpec
