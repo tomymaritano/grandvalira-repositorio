@@ -19,4 +19,18 @@ router.post(
   contactsController.createContact
 );
 
+router.put(
+  '/:id',
+  authenticate,
+  authorize(['MODERATOR', 'ADMIN']),
+  contactsController.updateContact
+);
+
+router.post(
+  '/:id/ban',
+  authenticate,
+  authorize(['MODERATOR', 'ADMIN']),
+  contactsController.banContact
+);
+
 module.exports = router;

@@ -10,3 +10,10 @@ exports.createContact = async (data) => {
     data,
   });
 };
+
+exports.updateContact = async (id, data) => {
+  return await prisma.contact.update({
+    where: { id },
+    data,
+  });
+};

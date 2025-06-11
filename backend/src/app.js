@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const logger = require('./utils/logger');
 
 const app = express();
 
@@ -8,6 +9,12 @@ app.use(cors({
   origin: 'http://localhost:3001',
 }));
 app.use(express.json());
+
+// Log each request
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.originalUrl}`);
+  next();
+});
 
 // Aquí vas a importar las rutas
 const authRoutes = require('./routes/auth.routes');
