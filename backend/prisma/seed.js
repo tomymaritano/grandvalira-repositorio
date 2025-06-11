@@ -1,33 +1,68 @@
 const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // usa 'bcrypt' si pudiste instalarlo
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = 'admin@example.com';
-  const plainPassword = 'password123';
-  const hashedPassword = await bcrypt.hash(plainPassword, 10);
+  // Crear User ADMIN
+  const adminEmail = 'admin@example.com';
+  const adminPassword = 'password123';
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-  // Check if user already exists
   const existingUser = await prisma.user.findUnique({
-    where: { email },
+    where: { email: adminEmail },
   });
+
+  let adminUser;
 
   if (existingUser) {
-    console.log(`User with email ${email} already exists.`);
-    return;
+    console.log(`User with email ${adminEmail} already exists.`);
+    adminUser = existingUser;
+  } else {
+    adminUser = await prisma.user.create({
+      data: {
+        email: adminEmail,
+        password: hashedPassword,
+        role: 'ADMIN',
+      },
+    });
+    console.log('✅ Admin user created:', adminUser);
   }
 
-  // Create user
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      role: 'ADMIN',
+  // Crear contactos de ejemplo
+  const contactsData = [
+    {
+      name: 'Juan Perez',
+      email: 'juan.perez@example.com',
+      phone: '1234567890',
     },
+    {
+      name: 'Maria Gomez',
+      email: 'maria.gomez@example.com',
+      phone: '2345678901',
+    },
+    {
+      name: 'Carlos Lopez',
+      email: 'carlos.lopez@example.com',
+      phone: '3456789012',
+    },
+  ];
+
+  // Ver si ya existen contactos (por ejemplo el de Juan)
+  const existingContact = await prisma.contact.findUnique({
+    where: { email: 'juan.perez@example.com' },
   });
 
-  console.log('✅ Admin user created:', user);
+  if (existingContact) {
+    console.log('Contacts already seeded.');
+  } else {
+    for (const contact of contactsData) {
+      await prisma.contact.create({
+        data: contact,
+      });
+    }
+    console.log('✅ Example contacts created.');
+  }
 }
 
 main()
