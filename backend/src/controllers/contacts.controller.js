@@ -60,6 +60,7 @@ exports.updateContact = async (req, res) => {
     const contact = await contactsService.updateContact(req.params.id, req.body);
     res.json(contact);
   } catch (err) {
+    logger.error(err);
     if (err.code === 'P2025') {
       return res.status(404).json({ error: 'Contact not found' });
     }
@@ -72,6 +73,7 @@ exports.banContact = async (req, res) => {
     const contact = await contactsService.banContact(req.params.id);
     res.json(contact);
   } catch (err) {
+    logger.error(err);
     if (err.code === 'P2025') {
       return res.status(404).json({ error: 'Contact not found' });
     }
