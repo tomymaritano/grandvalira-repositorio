@@ -2,27 +2,32 @@
 
 import { useEffect, useState } from 'react';
 import { useApi } from '@/app/hooks/useApi';
-import { useProtectedRoute } from '@/app/hooks/useProtectedRoute'; // 👈 Importas el hook
+import { useProtectedRoute } from '@/app/hooks/useProtectedRoute';
+import { useToast } from '../components/ToastProvider';
 
 export default function ContactsPage() {
   // 👈 Proteges esta página → todos los roles pueden entrar
   useProtectedRoute(['USER', 'MODERATOR', 'ADMIN']);
 
   const { get } = useApi();
+  const { showToast } = useToast();
 
   type Contact = { id: string | number; name: string; email: string };
 
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const { data, ok } = await get('http://localhost:3000/contacts');
+      setIsLoading(true);
+      const { data, ok, error } = await get('http://localhost:3000/contacts');
 
       if (ok) {
         setContacts(data);
       } else {
-        console.error('Failed to fetch contacts');
+        showToast(error || 'Failed to fetch contacts', 'error');
       }
+      setIsLoading(false);
     };
 
     fetchContacts();
@@ -56,7 +61,14 @@ export default function ContactsPage() {
                   </td>
                 </tr>
               ))}
-              {contacts.length === 0 && (
+              {isLoading && (
+                <tr>
+                  <td colSpan={2} className="px-5 py-5 border-b text-center">
+                    <div className="mx-auto h-5 w-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+                  </td>
+                </tr>
+              )}
+              {!isLoading && contacts.length === 0 && (
                 <tr>
                   <td
                     colSpan={2}
