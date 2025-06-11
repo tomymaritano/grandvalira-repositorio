@@ -25,9 +25,9 @@ Una plataforma interna para gestionar el directorio de empleados. **Roles: USER,
 ### 1️⃣ Backend
 
 ```bash
+cp backend/.env.example backend/.env
 cd backend
 npm install
-cp .env.example .env
 # Completa DATABASE_URL y JWT_SECRET
 
 # Generar Prisma Client

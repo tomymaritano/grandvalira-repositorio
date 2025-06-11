@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { useApi } from '@/app/hooks/useApi';
 import { useProtectedRoute } from '@/app/hooks/useProtectedRoute';
 import { useToast } from '../components/ToastProvider';
+import { useAuth } from '../context/AuthContext';
 
 export default function DashboardPage() {
   useProtectedRoute(['MODERATOR', 'ADMIN']); // 👈 Solo estos roles pueden entrar
 
   const { get, post } = useApi();
   const { showToast } = useToast();
+  const { token } = useAuth();
 
   type Contact = { id: string | number; name: string; email: string; status: string };
 
@@ -32,7 +34,7 @@ export default function DashboardPage() {
     };
 
     fetchContacts();
-  }, [get]);
+  }, [token]);
 
   const handleBanContact = async (contactId: string | number) => {
     const { ok, error } = await post(
