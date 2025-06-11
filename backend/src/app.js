@@ -6,8 +6,16 @@ const swaggerSpec = require('./config/swagger');
 
 const app = express();
 
+app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
+app.use(limiter);
+
 app.use(cors({
-  origin: 'http://localhost:3001',
+  origin: process.env.ALLOWED_ORIGIN,
 }));
 app.use(express.json());
 

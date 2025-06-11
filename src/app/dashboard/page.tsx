@@ -3,40 +3,48 @@
 import { useEffect, useState } from 'react';
 import { useApi } from '@/app/hooks/useApi';
 import { useProtectedRoute } from '@/app/hooks/useProtectedRoute';
+import { useToast } from '../components/ToastProvider';
 
 export default function DashboardPage() {
   useProtectedRoute(['MODERATOR', 'ADMIN']); // 👈 Solo estos roles pueden entrar
 
   const { get, post } = useApi();
+  const { showToast } = useToast();
 
   type Contact = { id: string | number; name: string; email: string; status: string };
 
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const { data, ok } = await get('http://localhost:3000/contacts');
+      setIsLoading(true);
+      const { data, ok, error } = await get('http://localhost:3000/contacts');
 
       if (ok) {
         setContacts(data);
       } else {
-        console.error('Failed to fetch contacts');
+        showToast(error || 'Failed to fetch contacts', 'error');
       }
+      setIsLoading(false);
     };
 
     fetchContacts();
   }, [get]);
 
   const handleBanContact = async (contactId: string | number) => {
-    const { ok } = await post(`http://localhost:3000/contacts/${contactId}/ban`, {});
+    const { ok, error } = await post(
+      `http://localhost:3000/contacts/${contactId}/ban`,
+      {}
+    );
 
     if (ok) {
-      alert('Contact banned');
+      showToast('Contact banned', 'success');
       // Refetch contacts
       const { data } = await get('http://localhost:3000/contacts');
       setContacts(data);
     } else {
-      alert('Failed to ban contact');
+      showToast(error || 'Failed to ban contact', 'error');
     }
   };
 
@@ -47,7 +55,7 @@ export default function DashboardPage() {
 
         <div className="flex justify-end mb-4">
           <button
-            onClick={() => alert('TODO: Add Contact')}
+            onClick={() => showToast('TODO: Add Contact')}
             className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors font-semibold"
           >
             + Add Contact
@@ -86,13 +94,13 @@ export default function DashboardPage() {
                   </td>
                   <td className="px-5 py-5 border-b text-sm text-gray-700 text-center space-x-2">
                     <button
-                      onClick={() => alert('TODO: Edit Contact')}
+                      onClick={() => showToast('TODO: Edit Contact')}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 text-xs"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => alert('TODO: Delete Contact')}
+                      onClick={() => showToast('TODO: Delete Contact')}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-xs"
                     >
                       Delete
@@ -108,7 +116,14 @@ export default function DashboardPage() {
                   </td>
                 </tr>
               ))}
-              {contacts.length === 0 && (
+              {isLoading && (
+                <tr>
+                  <td colSpan={4} className="px-5 py-5 border-b text-center">
+                    <div className="mx-auto h-5 w-5 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+                  </td>
+                </tr>
+              )}
+              {!isLoading && contacts.length === 0 && (
                 <tr>
                   <td colSpan={4} className="px-5 py-5 border-b text-center text-gray-500">
                     No contacts found.
