@@ -8,19 +8,14 @@ var { g: global, __dirname, k: __turbopack_refresh__, m: module } = __turbopack_
 __turbopack_context__.s({
     "useApi": (()=>useApi)
 });
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-client] (ecmascript)");
-var _s = __turbopack_context__.k.signature();
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 'use client';
-;
+const API_URL = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL;
 const useApi = ()=>{
-    _s();
-    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
     const get = async (url)=>{
         try {
-            const response = await fetch(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const response = await fetch(`${API_URL}${url}`, {
+                credentials: 'include'
             });
             const data = await response.json();
             return {
@@ -37,12 +32,12 @@ const useApi = ()=>{
     };
     const post = async (url, body)=>{
         try {
-            const response = await fetch(url, {
+            const response = await fetch(`${API_URL}${url}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(body)
             });
             const data = await response.json();
@@ -63,11 +58,6 @@ const useApi = ()=>{
         post
     };
 };
-_s(useApi, "ZpOvj47KCDv4EW5BIUHQHDAsr3M=", false, function() {
-    return [
-        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"]
-    ];
-});
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(module, globalThis.$RefreshHelpers$);
 }
@@ -90,11 +80,11 @@ var _s = __turbopack_context__.k.signature();
 ;
 const useProtectedRoute = (allowedRoles)=>{
     _s();
-    const { token, role } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
+    const { isAuthenticated, role } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "useProtectedRoute.useEffect": ()=>{
-            if (!token) {
+            if (!isAuthenticated) {
                 // Si no está autenticado → redirect a login
                 router.push('/login');
             } else if (!allowedRoles.includes(role)) {
@@ -104,13 +94,13 @@ const useProtectedRoute = (allowedRoles)=>{
         // Si pasa ambas validaciones, se queda en la página.
         }
     }["useProtectedRoute.useEffect"], [
-        token,
+        isAuthenticated,
         role,
         router,
         allowedRoles
     ]);
 };
-_s(useProtectedRoute, "VRb/VY9igQ79WaVDSmQuKiLZOwk=", false, function() {
+_s(useProtectedRoute, "szAqWe0ZMfs04rzsNC981r1vkRk=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
@@ -150,7 +140,7 @@ function DashboardPage() {
         "DashboardPage.useEffect": ()=>{
             const fetchContacts = {
                 "DashboardPage.useEffect.fetchContacts": async ()=>{
-                    const { data, ok } = await get('http://localhost:3000/contacts');
+                    const { data, ok } = await get('/contacts');
                     if (ok) {
                         setContacts(data);
                     } else {
@@ -164,11 +154,11 @@ function DashboardPage() {
         get
     ]);
     const handleBanContact = async (contactId)=>{
-        const { ok } = await post(`http://localhost:3000/contacts/${contactId}/ban`, {});
+        const { ok } = await post(`/contacts/${contactId}/ban`, {});
         if (ok) {
             alert('Contact banned');
             // Refetch contacts
-            const { data } = await get('http://localhost:3000/contacts');
+            const { data } = await get('/contacts');
             setContacts(data);
         } else {
             alert('Failed to ban contact');

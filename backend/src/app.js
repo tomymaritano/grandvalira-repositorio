@@ -1,7 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+<<<<<<< HEAD
 const cookieParser = require('cookie-parser');
+=======
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
+>>>>>>> main
 
 const app = express();
 
@@ -11,6 +16,9 @@ app.use(cors({
 }));
 app.use(cookieParser());
 app.use(express.json());
+
+// Swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Aquí vas a importar las rutas
 const authRoutes = require('./routes/auth.routes');
