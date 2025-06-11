@@ -7,12 +7,12 @@ import { useToast } from '../components/ToastProvider';
 import { useAuth } from '../context/AuthContext';
 
 export default function ContactsPage() {
-  // 👈 Proteges esta página → todos los roles pueden entrar
+  // Proteges esta página → todos los roles pueden entrar
   useProtectedRoute(['USER', 'MODERATOR', 'ADMIN']);
 
   const { get } = useApi();
   const { showToast } = useToast();
-  const { token } = useAuth();
+  const { isInitialized, isAuthenticated } = useAuth();
 
   type Contact = { id: string | number; name: string; email: string };
 
@@ -20,14 +20,21 @@ export default function ContactsPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Esperamos que AuthContext esté inicializado y que haya token válido
+    if (!isInitialized) return;
+    if (!isAuthenticated) return;
+
     const fetchContacts = async () => {
       setIsLoading(true);
       const { data, ok, error } = await get(
         `${process.env.NEXT_PUBLIC_API_URL}/contacts`
       );
 
+      console.log('API response:', data); // 👈 LOG IMPORTANTE
+
       if (ok) {
-        setContacts(data);
+        // Si data es un array lo seteamos tal cual, si es un objeto con "contacts", lo extraemos
+        setContacts(Array.isArray(data) ? data : data?.contacts || []);
       } else {
         showToast(error || 'Failed to fetch contacts', 'error');
       }
@@ -35,7 +42,7 @@ export default function ContactsPage() {
     };
 
     fetchContacts();
-  }, [token]);
+  }, [isInitialized, isAuthenticated, get, showToast]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-6">

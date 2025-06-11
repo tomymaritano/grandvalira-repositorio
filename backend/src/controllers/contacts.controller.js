@@ -3,19 +3,24 @@ const logger = require('../utils/logger')
 
 exports.getContacts = async (req, res, next) => {
   try {
-    const { page, limit, search, status } = req.query
+    const { page, limit, search, status } = req.query;
+
+    // 🚀 Agregás este console.log para ver a qué DB está conectado Prisma:
+    console.log('DATABASE_URL:', process.env.DATABASE_URL);
+
     const contacts = await contactsService.getContacts({
       page: Number(page) || 1,
       limit: Number(limit) || 10,
       search,
       status,
-    })
-    res.json(contacts)
+    });
+
+    res.json(contacts);
   } catch (err) {
-    logger.error(err)
-    next(err)
+    logger.error(err);
+    next(err);
   }
-}
+};
 
 exports.createContact = async (req, res, next) => {
   try {
