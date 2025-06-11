@@ -10,11 +10,11 @@ import { useAuth } from '@/app/context/AuthContext';
  * @param allowedRoles array de roles permitidos (por ejemplo: ['USER', 'MODERATOR'])
  */
 export const useProtectedRoute = (allowedRoles: string[]) => {
-  const { token, role } = useAuth();
+  const { isAuthenticated, role } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!token) {
+    if (!isAuthenticated) {
       // Si no está autenticado → redirect a login
       router.push('/login');
     } else if (!allowedRoles.includes(role)) {
@@ -22,5 +22,5 @@ export const useProtectedRoute = (allowedRoles: string[]) => {
       router.push('/contacts');
     }
     // Si pasa ambas validaciones, se queda en la página.
-  }, [token, role, router, allowedRoles]);
+  }, [isAuthenticated, role, router, allowedRoles]);
 };

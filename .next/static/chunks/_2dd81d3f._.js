@@ -9,62 +9,84 @@ __turbopack_context__.s({
     "AuthProvider": (()=>AuthProvider),
     "useAuth": (()=>useAuth)
 });
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.signature();
 'use client';
 ;
+const API_URL = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].env.NEXT_PUBLIC_API_URL;
 const AuthContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createContext"])({
-    token: '',
     role: '',
     isAuthenticated: false,
-    login: ()=>{},
-    logout: ()=>{}
+    login: async ()=>null,
+    logout: async ()=>{}
 });
 const AuthProvider = ({ children })=>{
     _s();
-    const [token, setToken] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
     const [role, setRole] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])('');
+    const fetchSession = async ()=>{
+        try {
+            const res = await fetch(`${API_URL}/auth/session`, {
+                credentials: 'include'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setRole(data.role);
+            } else {
+                setRole('');
+            }
+        } catch  {
+            setRole('');
+        }
+    };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "AuthProvider.useEffect": ()=>{
-            const storedToken = localStorage.getItem('token');
-            const storedRole = localStorage.getItem('role');
-            if (storedToken) setToken(storedToken);
-            if (storedRole) setRole(storedRole);
+            fetchSession();
         }
     }["AuthProvider.useEffect"], []);
-    const login = (newToken)=>{
-        const decoded = JSON.parse(atob(newToken.split('.')[1]));
-        const userRole = decoded.role;
-        localStorage.setItem('token', newToken);
-        localStorage.setItem('role', userRole);
-        setToken(newToken);
-        setRole(userRole);
-        return userRole; // 👈 muy importante para que LoginPage pueda redirigir
+    const login = async (email, password)=>{
+        const res = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setRole(data.role);
+            return data.role;
+        }
+        return null;
     };
-    const logout = ()=>{
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        setToken('');
+    const logout = async ()=>{
+        await fetch(`${API_URL}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
         setRole('');
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AuthContext.Provider, {
         value: {
-            token,
             role,
-            isAuthenticated: !!token,
+            isAuthenticated: role !== '',
             login,
             logout
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/app/context/AuthContext.tsx",
-        lineNumber: 55,
+        lineNumber: 67,
         columnNumber: 5
     }, this);
 };
-_s(AuthProvider, "f09SKLUyu8yv4IQNhEROZbjFXKQ=");
+_s(AuthProvider, "I6d0rxgIdmm0IGXgWdryR+re/NI=");
 _c = AuthProvider;
 const useAuth = ()=>{
     _s1();

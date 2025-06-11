@@ -40,7 +40,13 @@ npx prisma migrate dev --name init
 # Ejecutar servidor
 npm run dev
 
+<<<<<<< HEAD
+Set the `NEXT_PUBLIC_API_URL` environment variable to the base URL of the back-end API.
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+=======
 # Frontend 
+>>>>>>> main
 
 cd app
 npm install

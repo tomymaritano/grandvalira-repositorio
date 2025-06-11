@@ -22,49 +22,70 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 'use client';
 ;
 ;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const AuthContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createContext"])({
-    token: '',
     role: '',
     isAuthenticated: false,
-    login: ()=>{},
-    logout: ()=>{}
+    login: async ()=>null,
+    logout: async ()=>{}
 });
 const AuthProvider = ({ children })=>{
-    const [token, setToken] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
     const [role, setRole] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])('');
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        const storedToken = localStorage.getItem('token');
-        const storedRole = localStorage.getItem('role');
-        if (storedToken) setToken(storedToken);
-        if (storedRole) setRole(storedRole);
-    }, []);
-    const login = (newToken)=>{
-        const decoded = JSON.parse(atob(newToken.split('.')[1]));
-        const userRole = decoded.role;
-        localStorage.setItem('token', newToken);
-        localStorage.setItem('role', userRole);
-        setToken(newToken);
-        setRole(userRole);
-        return userRole; // 👈 muy importante para que LoginPage pueda redirigir
+    const fetchSession = async ()=>{
+        try {
+            const res = await fetch(`${API_URL}/auth/session`, {
+                credentials: 'include'
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setRole(data.role);
+            } else {
+                setRole('');
+            }
+        } catch  {
+            setRole('');
+        }
     };
-    const logout = ()=>{
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        setToken('');
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        fetchSession();
+    }, []);
+    const login = async (email, password)=>{
+        const res = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setRole(data.role);
+            return data.role;
+        }
+        return null;
+    };
+    const logout = async ()=>{
+        await fetch(`${API_URL}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
         setRole('');
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AuthContext.Provider, {
         value: {
-            token,
             role,
-            isAuthenticated: !!token,
+            isAuthenticated: role !== '',
             login,
             logout
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/app/context/AuthContext.tsx",
-        lineNumber: 55,
+        lineNumber: 67,
         columnNumber: 5
     }, this);
 };

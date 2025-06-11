@@ -20,31 +20,14 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const role = await login(email, password);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        // 👇 Primero guardar token en context + localStorage
-        login(data.token);
-
-        // 👇 Decodificar role desde el token
-        const decoded = JSON.parse(atob(data.token.split('.')[1]));
-        const role = decoded.role;
-
-        // 👇 Redireccionar según el role
+      if (role) {
         if (role === 'USER') {
           router.push('/contacts');
         } else if (role === 'MODERATOR' || role === 'ADMIN') {
           router.push('/dashboard');
         } else {
-          // fallback por si el role es inesperado
           router.push('/');
         }
       } else {

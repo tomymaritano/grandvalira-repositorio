@@ -8,17 +8,13 @@ var { g: global, __dirname } = __turbopack_context__;
 __turbopack_context__.s({
     "useApi": (()=>useApi)
 });
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/AuthContext.tsx [app-ssr] (ecmascript)");
 'use client';
-;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const useApi = ()=>{
-    const { token } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     const get = async (url)=>{
         try {
-            const response = await fetch(url, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+            const response = await fetch(`${API_URL}${url}`, {
+                credentials: 'include'
             });
             const data = await response.json();
             return {
@@ -35,12 +31,12 @@ const useApi = ()=>{
     };
     const post = async (url, body)=>{
         try {
-            const response = await fetch(url, {
+            const response = await fetch(`${API_URL}${url}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(body)
             });
             const data = await response.json();
@@ -102,10 +98,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$Aut
 ;
 ;
 const useProtectedRoute = (allowedRoles)=>{
-    const { token, role } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
+    const { isAuthenticated, role } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$AuthContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useAuth"])();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        if (!token) {
+        if (!isAuthenticated) {
             // Si no está autenticado → redirect a login
             router.push('/login');
         } else if (!allowedRoles.includes(role)) {
@@ -114,7 +110,7 @@ const useProtectedRoute = (allowedRoles)=>{
         }
     // Si pasa ambas validaciones, se queda en la página.
     }, [
-        token,
+        isAuthenticated,
         role,
         router,
         allowedRoles
@@ -147,7 +143,7 @@ function DashboardPage() {
     const [contacts, setContacts] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const fetchContacts = async ()=>{
-            const { data, ok } = await get('http://localhost:3000/contacts');
+            const { data, ok } = await get('/contacts');
             if (ok) {
                 setContacts(data);
             } else {
@@ -159,11 +155,11 @@ function DashboardPage() {
         get
     ]);
     const handleBanContact = async (contactId)=>{
-        const { ok } = await post(`http://localhost:3000/contacts/${contactId}/ban`, {});
+        const { ok } = await post(`/contacts/${contactId}/ban`, {});
         if (ok) {
             alert('Contact banned');
             // Refetch contacts
-            const { data } = await get('http://localhost:3000/contacts');
+            const { data } = await get('/contacts');
             setContacts(data);
         } else {
             alert('Failed to ban contact');

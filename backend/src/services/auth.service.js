@@ -15,5 +15,5 @@ exports.login = async (email, password) => {
 
   // Generar token
   const token = generateToken(user);
-  return token;
+  return { token, role: user.role };
 };
