@@ -59,5 +59,8 @@ npm run test          # Ejecutar todos los tests
 npm run test:watch    # Ejecutar en modo watch
 npm run test:coverage # Generar reporte de coverage
 ```
+Los tests de frontend usan Vitest mientras que el backend emplea Jest y Supertest.
+El comando `npm run test` ejecuta ambos conjuntos de pruebas y `npm run test:coverage`
+genera los reportes de cobertura.
 
-Para React 19 se usa React Testing Library con Vitest. El backend utiliza Jest y Supertest.
+Para React 19 se utiliza React Testing Library con Vitest.
