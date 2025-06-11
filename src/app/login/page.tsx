@@ -31,14 +31,21 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        login(data.token); // 👈 solo autentica, no devuelve el role
+        // 👇 Primero guardar token en context + localStorage
+        login(data.token);
 
-        // 🚀 Redirect por role
-        const role = data.role; // Asegúrate de que el backend devuelva el role en la respuesta
+        // 👇 Decodificar role desde el token
+        const decoded = JSON.parse(atob(data.token.split('.')[1]));
+        const role = decoded.role;
+
+        // 👇 Redireccionar según el role
         if (role === 'USER') {
           router.push('/contacts');
         } else if (role === 'MODERATOR' || role === 'ADMIN') {
           router.push('/dashboard');
+        } else {
+          // fallback por si el role es inesperado
+          router.push('/');
         }
       } else {
         setError('Invalid credentials');
