@@ -40,6 +40,9 @@ npx prisma migrate dev --name init
 # Ejecutar servidor
 npm run dev
 
+# Swagger UI
+# Abre http://localhost:3000/api-docs para ver la documentación
+
 # Frontend 
 
 cd app

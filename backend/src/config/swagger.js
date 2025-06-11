@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
 
 const options = {
   definition: {
@@ -24,7 +25,8 @@ const options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ['./src/routes/*.js'], // 👈 lee tus rutas
+  // Use an absolute path so swagger-jsdoc works regardless of cwd
+  apis: [path.join(__dirname, '../routes/*.js')],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
