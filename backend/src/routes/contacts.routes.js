@@ -1,5 +1,5 @@
 const express = require('express');
-const authenticate = require('../middlewares/authenticate.middleware');
+const authenticate = require('../middlewares/authenticate');
 const authorize = require('../middlewares/authorize.middleware');
 const contactsController = require('../controllers/contacts.controller');
 
