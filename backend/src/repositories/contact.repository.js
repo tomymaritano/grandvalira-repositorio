@@ -27,8 +27,6 @@ exports.updateContact = async (id, data) => {
     where: { id },
     data,
   });
-<<<<<<< HEAD
-=======
 };
 
 exports.banContact = async (id) => {
@@ -36,5 +34,4 @@ exports.banContact = async (id) => {
     where: { id },
     data: { status: 'BANNED' },
   });
->>>>>>> main
 };

@@ -19,15 +19,11 @@ exports.getContacts = async (req, res) => {
 
 exports.createContact = async (req, res) => {
   try {
-<<<<<<< HEAD
-    const contact = await contactsService.createContact(req.body, req.user.id);
-=======
     const { name, email, phone } = req.body;
     if (!name || !email || !phone) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     const contact = await contactsService.createContact(req.body);
->>>>>>> main
     res.status(201).json(contact);
   } catch (err) {
     logger.error(err);

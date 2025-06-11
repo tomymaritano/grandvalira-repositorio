@@ -29,11 +29,7 @@ router.put(
   contactsController.updateContact
 );
 
-<<<<<<< HEAD
-router.post(
-=======
 router.patch(
->>>>>>> main
   '/:id/ban',
   authenticate,
   authorize(['MODERATOR', 'ADMIN']),
