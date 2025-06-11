@@ -17,7 +17,11 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "swagger-jsdoc": "^6.2.8",
+<<<<<<< HEAD
     "swagger-ui-express": "^5.1.0"
+=======
+    "swagger-ui-express": "^5.0.1"
+>>>>>>> main
   },
   "devDependencies": {
     "eslint": "^9.28.0",
