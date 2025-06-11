@@ -35,3 +35,17 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 # grandvalira-repositorio
+
+## Backend structure
+
+The backend code lives under `backend/src` and follows a simple layered approach:
+
+```
+backend/src/
+  controllers/   # Express route handlers
+  services/      # Business logic
+  repositories/  # Database access
+  middlewares/   # Authentication, validation, etc.
+```
+
+Each layer focuses on a single responsibility which helps keep the codebase organized.
