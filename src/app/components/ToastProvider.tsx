@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 type Toast = { id: string; message: string; type: 'success' | 'error' | 'info' };
 
@@ -9,7 +9,7 @@ type ToastContextType = {
   showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 };
 
-const ToastContext = createContext<ToastContextType>({ showToast: () => {} });
+const ToastContext = createContext<ToastContextType>({ showToast: () => { } });
 
 const toastStyle = (type: Toast['type']) => {
   switch (type) {
@@ -24,9 +24,14 @@ const toastStyle = (type: Toast['type']) => {
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
-
+  const generateId = () => {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      return crypto.randomUUID();
+    }
+    return Math.random().toString(36).slice(2);
+  };
   const showToast = (message: string, type: Toast['type'] = 'info') => {
-    const id = randomUUID();
+    const id = generateId();
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
